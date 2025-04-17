@@ -6,6 +6,11 @@ import 'izitoast/dist/css/iziToast.min.css';
 const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
 
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 export function createGallery(images) {
   const galleryList = images
     .map(
