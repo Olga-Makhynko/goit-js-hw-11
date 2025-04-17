@@ -11,6 +11,23 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
+export function waitForImagesToLoad() {
+  const images = document.querySelectorAll('.gallery img');
+  const totalImages = images.length;
+  let loadedImages = 0;
+
+  return new Promise(resolve => {
+    images.forEach(image => {
+      image.addEventListener('load', () => {
+        loadedImages += 1;
+        if (loadedImages === totalImages) {
+          resolve();
+        }
+      });
+    });
+  });
+}
+
 export function createGallery(images) {
   const galleryList = images
     .map(

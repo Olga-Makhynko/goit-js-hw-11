@@ -13,7 +13,7 @@ import {
 const form = document.querySelector('.form');
 const input = form.querySelector('input[name="search-text"]');
 
-form.addEventListener('submit', async event => {
+form.addEventListener('submit', event => {
   event.preventDefault();
 
   const query = input.value.trim();
@@ -32,19 +32,22 @@ form.addEventListener('submit', async event => {
     .then(images => {
       if (images.length === 0) {
         iziToast.info({
-          message: `Sorry, there are no images matching ${query}. Please try again!`,
+          message: `Sorry, there are no images matching "${query}". Please try again!`,
           position: 'topRight',
         });
-        return;
+        throw new Error('No images found');
       }
 
       createGallery(images);
+      return waitForImagesToLoad();
     })
     .catch(error => {
-      iziToast.error({
-        message: 'Something went wrong. Please try again later.',
-        position: 'topRight',
-      });
+      if (error.message !== 'No images found') {
+        iziToast.error({
+          message: 'Something went wrong. Please try again later.',
+          position: 'topRight',
+        });
+      }
     })
     .finally(() => {
       hideLoader();
