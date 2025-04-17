@@ -28,25 +28,25 @@ form.addEventListener('submit', async event => {
   clearGallery();
   showLoader();
 
-  try {
-    const images = await getImagesByQuery(query);
+  getImagesByQuery(query)
+    .then(images => {
+      if (images.length === 0) {
+        iziToast.info({
+          message: `Sorry, there are no images matching ${query}. Please try again!`,
+          position: 'topRight',
+        });
+        return;
+      }
 
-    if (images.length === 0) {
-      iziToast.info({
-        message: `Sorry, there are no images matching "${query}". Please try again!`,
+      createGallery(images);
+    })
+    .catch(error => {
+      iziToast.error({
+        message: 'Something went wrong. Please try again later.',
         position: 'topRight',
       });
-      return;
-    }
-
-    createGallery(images);
-  } catch (error) {
-    iziToast.error({
-      message: 'Something went wrong. Please try again later.',
-      position: 'topRight',
+    })
+    .finally(() => {
+      hideLoader();
     });
-  } finally {
-    await waitForImagesToLoad();
-    hideLoader();
-  }
 });
